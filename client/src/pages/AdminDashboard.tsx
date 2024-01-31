@@ -20,6 +20,9 @@ import { IProduct } from "@/interfaces/IProduct";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useState } from "react";
+import { usePostProduct } from "@/hooks/usePostProduct";
+import { useToast } from "@/components/ui/use-toast";
+
 
 function AdminDashboard() {
   const { products } = useGetProducts();
@@ -28,64 +31,88 @@ function AdminDashboard() {
   const [imageUrl, setImageUrl] = useState<string>();
   const [description, setDescription] = useState<string>();
   const [stockQuantity, setStockQuantity] = useState<number>();
+  const { postProduct } = usePostProduct(); // Correct usage of usePostProduct
   // TODO: Add paginação...
+  const { toast } = useToast()
+  const [open, setOpen] = useState(false)
+
 
   const handlePostProduct = async () => {
-  
-  };
+    try {
+      const newProduct = {
+        productName,
+        price,
+        imageUrl,
+        description,
+        stockQuantity,
+      };
+      const res = await postProduct(newProduct);
+      console.log({res})
+      toast({
+        title: "Product Created Sucessfully!!!",
+        description: `New ${productName} created.`,
+      })
+    } catch (error) {
+      console.error("Erro ao postar produto:", error);
+    } 
 
+    setOpen(false)
+  };
+  
   return (
     <div className="flex flex-col bg-white">
       <div className="container mx-auto m-16">
-        <Dialog>
+        <Dialog open={open} onOpenChange={setOpen}>
           <DialogContent>
             <DialogHeader>
               <DialogTitle>New Product</DialogTitle>
               <div className="flex flex-col gap-y-4">
                 <div className="flex mt-4 flex-col gap-y-2">
                   <Label>Product Name</Label>
-                  <Input 
+                  <Input
                     placeholder="MacBook air M1 Pro V2 Full HD Ultra SSD NVDIA PLUS"
-                    onChange={e => setProductName(e.target.value)}
+                    onChange={(e) => setProductName(e.target.value)}
                   />
                 </div>
                 <div className="flex  flex-col gap-y-2">
                   <Label>Price</Label>
-                  <Input 
+                  <Input
                     placeholder="2,50"
-                    onChange={e => setPrice(Number(e.target.value))}
+                    onChange={(e) => setPrice(Number(e.target.value))}
                   />
                 </div>
                 <div className="flex  flex-col gap-y-2">
                   <Label>Stock Quantity</Label>
-                  <Input 
+                  <Input
                     placeholder="3"
-                    onChange={e => setStockQuantity(Number(e.target.value))}
+                    onChange={(e) => setStockQuantity(Number(e.target.value))}
                     type="number"
                   />
                 </div>
                 <div className="flex  flex-col gap-y-2">
-                  { /* TODO: ADD FILE INPUT TO IMAGE, CHANGE HOW IMAGES ARE HANDLED */}
+                  {/* TODO: ADD FILE INPUT TO IMAGE, CHANGE HOW IMAGES ARE HANDLED */}
                   <Label>Image URL</Label>
-                  <Input 
+                  <Input
                     placeholder="http://mockimage.com.br/4"
-                    onChange={e => setStockQuantity(Number(e.target.value))}
+                    onChange={(e) => setImageUrl(e.target.value)}
                     type="string"
                   />
                 </div>
                 <div className="flex  flex-col gap-y-2">
-                  { /* TODO: ADD FILE INPUT TO IMAGE, CHANGE HOW IMAGES ARE HANDLED */}
+                  {/* TODO: ADD FILE INPUT TO IMAGE, CHANGE HOW IMAGES ARE HANDLED */}
                   <Label>Description</Label>
-                  <Input 
+                  <Input
                     placeholder="Very cool product"
-                    onChange={e => setDescription(e.target.value)}
+                    onChange={(e) => setDescription(e.target.value)}
                     type="string"
                   />
                 </div>
               </div>
               <div>
                 {/* Why are margins working like that? no idea */}
-                <Button className="mt-4" onClick={handlePostProduct}>Save</Button>
+                <Button className="mt-4" onClick={handlePostProduct} type="submit">
+                  Save
+                </Button>
               </div>
             </DialogHeader>
           </DialogContent>

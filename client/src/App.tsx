@@ -8,12 +8,15 @@ import { QueryClient, QueryClientProvider } from 'react-query';
 import { ShopContextProvider } from "./context/ShopContext";
 import { ProtectedRoute } from "./components/ProtectedRoute/ProtectedRoute";
 import AdminDashboard from "./pages/AdminDashboard";
+import { Toaster } from "@/components/ui/toaster"
 
 const queryClient = new QueryClient();
 
 function App() {
   return (
     <QueryClientProvider client={queryClient}>
+      <Toaster />
+
       <Router>
         <ShopContextProvider>
           <Navbar />

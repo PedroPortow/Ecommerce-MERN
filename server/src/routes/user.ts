@@ -8,7 +8,7 @@ import { UserErrors } from "../errors";
 import { verifyToken } from "../utils/verifyToken";
 
 router.post("/register", async (req, res) => {
-  const { username, password } = req.body;
+  const { username, password, isAdmin = false } = req.body;
 
   try {
     const user = await UserModel.findOne({ username });
@@ -18,7 +18,7 @@ router.post("/register", async (req, res) => {
     }
 
     const hashedPassword = await bcrypt.hash(password, 10);
-    const newUser = new UserModel({ username, password: hashedPassword });
+    const newUser = new UserModel({ username, password: hashedPassword, isAdmin  });
     await newUser.save();
 
     res.json({ message: "User registered successfully" });
@@ -40,7 +40,7 @@ router.post("/login", async (req, res) => {
     if (!isPasswordValid) {
       return res.status(400).json({ type: UserErrors.WRONG_CREDENTIALS });
     }
-    const token = jwt.sign({ id: user._id }, "secret", {
+    const token = jwt.sign({ id: user._id, isAdmin: user.isAdmin }, "secret", {
       expiresIn: '1 hour'
     });
     res.json({ token, userID: user._id });

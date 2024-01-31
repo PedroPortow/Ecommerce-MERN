@@ -1,23 +1,18 @@
 import axios from "axios";
-import { useEffect, useState } from "react";
 import { useToken } from "./useToken";
+import { IProduct } from "@/interfaces/IProduct";
 
 export const usePostProduct = () => {
-  const [products, setProducts] = useState([]);
   const { headers } = useToken();
-
-  const fetchProducts = async () => {
+  
+  const postProduct = async (product: IProduct) => {
     try {
-      const res = await axios.get("http://localhost:3001/products", { headers });
-      setProducts(res.data.products);
+      await axios.post("http://localhost:3001/products/new", product, { headers });
     } catch (err) {
-      console.error(err);
+      console.error("Erro ao adicionar produto:", err);
+      throw err;
     }
   };
 
-  useEffect(() => {
-    fetchProducts();
-  }, []);
-
-  return { products, fetchProducts };
+  return { postProduct };
 };
