@@ -22,20 +22,24 @@ import { Label } from "@/components/ui/label";
 import { useState } from "react";
 import { usePostProduct } from "@/hooks/usePostProduct";
 import { useToast } from "@/components/ui/use-toast";
+import { useEditProduct } from "@/hooks/useEditProduct";
+import { useDeleteProduct } from "@/hooks/useDeleteProduct";
 
 
 function AdminDashboard() {
-  const { products } = useGetProducts();
   const [productName, setProductName] = useState<string>("");
   const [price, setPrice] = useState<number>();
-  const [imageUrl, setImageUrl] = useState<string>();
-  const [description, setDescription] = useState<string>();
+  const [imageUrl, setImageUrl] = useState<string>("");
+  const [description, setDescription] = useState<string>("");
   const [stockQuantity, setStockQuantity] = useState<number>();
-  const { postProduct } = usePostProduct(); // Correct usage of usePostProduct
-  // TODO: Add paginação...
-  const { toast } = useToast()
   const [open, setOpen] = useState(false)
+  const [editingProduct, setEditingProduct] = useState<IProduct>();
 
+  const { products, fetchProducts } = useGetProducts();
+  const { editProduct } = useEditProduct();
+  const { postProduct } = usePostProduct(); 
+  const { deleteProduct } = useDeleteProduct();
+  const { toast } = useToast();
 
   const handlePostProduct = async () => {
     try {
@@ -47,17 +51,43 @@ function AdminDashboard() {
         stockQuantity,
       };
       const res = await postProduct(newProduct);
-      console.log({res})
       toast({
         title: "Product Created Sucessfully!!!",
         description: `New ${productName} created.`,
       })
+      clearInputs();
+      fetchProducts();
     } catch (error) {
       console.error("Erro ao postar produto:", error);
     } 
 
     setOpen(false)
   };
+
+  const clearInputs = () => {
+    setProductName("");
+    setPrice(undefined);
+    setImageUrl("");
+    setDescription("");
+    setStockQuantity(undefined);
+    setEditingProduct(undefined);
+  }
+
+  const handleDeleteProduct = async (id: string | undefined) => {
+    try {
+      await deleteProduct(id);
+      fetchProducts();
+    } catch (err) {
+      console.error(err);
+    }
+  }
+  
+  // const handleEditProduct = (id: string | undefined) => {
+  //   try {
+  //     await editProduct(id);
+  //   }
+  // }
+  // console.log({products})
   
   return (
     <div className="flex flex-col bg-white">
@@ -139,7 +169,12 @@ function AdminDashboard() {
                     <TableCell>{product.imageUrl}</TableCell>
                     <TableCell>{product.description}</TableCell>
                     <TableCell>
-                      <i className="fa-solid fa-trash-can"></i>
+                      <i className="fa-solid fa-pencil" onClick={() => { 
+                        handleEditProduct(product._id);
+                      }}></i>
+                    </TableCell>
+                    <TableCell>
+                      <i className="fa-solid fa-trash-can" onClick={() => handleDeleteProduct(product._id)}></i>
                     </TableCell>
                   </TableRow>
                 );
