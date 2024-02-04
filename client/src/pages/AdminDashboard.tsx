@@ -14,14 +14,15 @@ import { useRef, useState } from "react";
 import { useToast } from "@/components/ui/use-toast";
 import { useDeleteProduct } from "@/hooks/useDeleteProduct";
 import ProductModal, { IProductModalHandles } from "@/components/ProductModal/ProductModal";
+import ConfirmationModal, { IConfirmationModalHandles } from "@/components/ConfirmationModal/ConfirmationModal";
 
 function AdminDashboard() {
   const [editingProduct, setEditingProduct] = useState<IEditProduct | undefined>();
   const productModalRef = useRef<IProductModalHandles>(null);
+  const confirmationModalRef = useRef<IConfirmationModalHandles>(null);
 
   const { products, fetchProducts } = useGetProducts();
   const { deleteProduct } = useDeleteProduct();
-  const { toast } = useToast();
 
   const handleDeleteProduct = async (id: string | undefined) => {
     try {
@@ -40,6 +41,7 @@ function AdminDashboard() {
     <div className="flex flex-col bg-white">
       <div className="container mx-auto m-16">
           <ProductModal ref={productModalRef} editingProduct={editingProduct} fetchProducts={fetchProducts} clearEditingProduct={() => setEditingProduct(undefined)} />
+          {/* <ConfirmationModal ref={confirmationModalRef} handleDeleteProduct={handleDeleteProduct} /> */}
           <Table className="bg-white">
             <TableHeader>
               <TableRow>

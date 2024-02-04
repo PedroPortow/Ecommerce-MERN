@@ -18,9 +18,15 @@ const ProductCard: React.FC<IProduct> = ({ _id, name, price = 0, description, im
         <p className="text-gray-700 mb-2">{description}</p>
         <p className="text-gray-900 font-bold">${price.toFixed(2)}</p>
         <p className="text-sm text-gray-600">Stock: {stockQuantity}</p>
-        <Button onClick={() => addToCart({_id, name, price, description, imageUrl, stockQuantity})}>
-          Add to Cart {quantity > 0 && <span>{quantity}</span>}
-        </Button>
+        <div className='flex items-center justify-between mt-4'>
+          <Button 
+            className=''
+            onClick={() => addToCart({_id, name, price, description, imageUrl, stockQuantity})}
+          >
+            Add to Cart
+          </Button>
+          <p> <i className="fa-solid fa-cart-shopping"></i> {quantity}</p>
+        </div>
       </div>
     </Card>
   );
