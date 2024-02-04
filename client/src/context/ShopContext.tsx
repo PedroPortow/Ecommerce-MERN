@@ -6,7 +6,7 @@ interface ICartProduct {
   quantity: number;
   imageUrl?: string;
   price: number;
-  productName: string;
+  name: string;
   _id: string;
 }
 

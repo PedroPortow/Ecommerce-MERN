@@ -68,12 +68,12 @@ router.post("/checkout", verifyToken, async (req: Request, res: Response) => {
 
 router.put("/edit/:productId", verifyToken, authenticateAdmin, async (req: Request, res: Response) => {
   const { productId } = req.params; 
-  const { productName, price, description, imageUrl, stockQuantity } = req.body; 
+  const { name, price, description, imageUrl, stockQuantity } = req.body; 
 
   try {
     const updatedProduct = await ProductModel.findByIdAndUpdate(
       productId,
-      { productName, price, description, imageUrl, stockQuantity },
+      { name, price, description, imageUrl, stockQuantity },
       { new: true } 
     );
 
@@ -120,16 +120,16 @@ router.get("/:productId", verifyToken, async (req: Request, res: Response) => {
 });
 
 router.post("/new", verifyToken, authenticateAdmin, async (req, res) => {
-  const { productName, price, description, imageUrl, stockQuantity }= req.body;
+  const { name, price, description, imageUrl, stockQuantity }= req.body;
 
   try {
-    const existingProduct = await ProductModel.findOne({ productName });
+    const existingProduct = await ProductModel.findOne({ name });
     if (existingProduct) {
       return res.status(400).json({ message: "Product with this name already exists" });
     }
     
     const newProduct = new ProductModel({
-      productName,
+      name,
       price,
       description,
       imageUrl,

@@ -1,5 +1,5 @@
 export interface INewProduct {
-  productName: string;
+  name: string;
   price: number;
   imageUrl?: string;
   description: string;

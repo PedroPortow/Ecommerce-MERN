@@ -15,7 +15,7 @@ const Shop: React.FC = () => {
           <ProductCard
             key={product._id}
             _id={product._id}
-            productName={product.productName}
+            name={product.name}
             price={product.price}
             description={product.description}
             imageUrl={product.imageUrl}

@@ -27,9 +27,9 @@ const Checkout: React.FC = () => {
             {cartProducts.map((product) => (
               <li key={product._id} className="flex justify-between items-center border-b py-2">
                 <div className="flex items-center">
-                  <img src={product.imageUrl} alt={product.productName} className="h-16 w-16 object-cover mr-4" />
+                  <img src={product.imageUrl} alt={product.name} className="h-16 w-16 object-cover mr-4" />
                   <div>
-                    <h2 className="text-xl font-semibold">{product.productName}</h2>
+                    <h2 className="text-xl font-semibold">{product.name}</h2>
                     <p>R$ {product.price.toFixed(2)}</p>
                   </div>
                 </div>
