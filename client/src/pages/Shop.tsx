@@ -7,6 +7,8 @@ import { IProduct } from '@/interfaces/IProduct';
 
 const Shop: React.FC = () => {
   const { products } = useGetProducts();
+  
+  console.log({products})
 
   return (
     <div className="container mx-auto p-4 bg-slate-100">

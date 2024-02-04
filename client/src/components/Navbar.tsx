@@ -10,7 +10,6 @@ const Navbar: React.FC = () => {
       <nav className="bg-gray-800 text-white p-4 flex justify-between items-center">
         <h1 className="text-xl font-bold">Shop</h1>
         <div>
-          <Link to="/" className="px-4 hover:text-gray-300">Produtos</Link>
           <Link to="/checkout" className="px-4 hover:text-gray-300">
             <i className="fa-solid fa-cart-shopping"></i>
           </Link>
