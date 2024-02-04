@@ -1,16 +1,15 @@
-import React from 'react';
+import React, { useContext, useMemo } from 'react';
 import { Card } from '../ui/card';
+import { IProduct } from '@/interfaces/IProduct';
+import { Button } from '../ui/button';
+import { IShopContext, ShopContext } from '@/context/ShopContext';
 
-interface ProductCardProps {
-  _id: string;
-  productName: string;
-  price: number;
-  description: string;
-  imageUrl: string;
-  stockQuantity: number;
-}
 
-const ProductCard: React.FC<ProductCardProps> = ({ _id, productName, price, description, imageUrl, stockQuantity }) => {
+const ProductCard: React.FC<IProduct> = ({ _id, productName, price = 0, description, imageUrl, stockQuantity }) => {
+  const { addToCart, getCartProductQuantity} = useContext<IShopContext>(ShopContext)
+
+  const quantity = getCartProductQuantity(_id);
+
   return (
     <Card key={_id} >
       <img src={imageUrl} alt={productName} className="w-full h-64 object-cover" />
@@ -19,6 +18,9 @@ const ProductCard: React.FC<ProductCardProps> = ({ _id, productName, price, desc
         <p className="text-gray-700 mb-2">{description}</p>
         <p className="text-gray-900 font-bold">${price.toFixed(2)}</p>
         <p className="text-sm text-gray-600">Stock: {stockQuantity}</p>
+        <Button onClick={() => addToCart({_id, productName, price, description, imageUrl, stockQuantity})}>
+          Add to Cart {quantity > 0 && <span>{quantity}</span>}
+        </Button>
       </div>
     </Card>
   );

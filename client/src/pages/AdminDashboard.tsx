@@ -12,19 +12,18 @@ import {
   DialogContent,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from "@/components/ui/dialog";
 
 import { useGetProducts } from "@/hooks/useGetProducts";
 import { IProduct } from "@/interfaces/IProduct";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { usePostProduct } from "@/hooks/usePostProduct";
 import { useToast } from "@/components/ui/use-toast";
 import { useEditProduct } from "@/hooks/useEditProduct";
 import { useDeleteProduct } from "@/hooks/useDeleteProduct";
-
+import { INewProduct } from "@/interfaces/INewProduct";
 
 function AdminDashboard() {
   const [productName, setProductName] = useState<string>("");
@@ -33,7 +32,8 @@ function AdminDashboard() {
   const [description, setDescription] = useState<string>("");
   const [stockQuantity, setStockQuantity] = useState<number>();
   const [open, setOpen] = useState(false)
-  const [editingProduct, setEditingProduct] = useState<IProduct>();
+  const [editingProduct, setEditingProduct] = useState<boolean>();
+  const [productId, setProductId] = useState<string>();
 
   const { products, fetchProducts } = useGetProducts();
   const { editProduct } = useEditProduct();
@@ -41,16 +41,22 @@ function AdminDashboard() {
   const { deleteProduct } = useDeleteProduct();
   const { toast } = useToast();
 
+  useEffect(() => {
+    if(!open){
+      clearInputs();
+    }
+  }, [open])
+
   const handlePostProduct = async () => {
     try {
-      const newProduct = {
+      const newProduct: INewProduct = {
         productName,
-        price,
+        price: Number(price),
         imageUrl,
         description,
-        stockQuantity,
+        stockQuantity: Number(stockQuantity),
       };
-      const res = await postProduct(newProduct);
+      await postProduct(newProduct);
       toast({
         title: "Product Created Sucessfully!!!",
         description: `New ${productName} created.`,
@@ -58,7 +64,7 @@ function AdminDashboard() {
       clearInputs();
       fetchProducts();
     } catch (error) {
-      console.error("Erro ao postar produto:", error);
+      console.error(error);
     } 
 
     setOpen(false)
@@ -81,17 +87,39 @@ function AdminDashboard() {
       console.error(err);
     }
   }
-  
-  // const handleEditProduct = (id: string | undefined) => {
-  //   try {
-  //     await editProduct(id);
-  //   }
-  // }
-  // console.log({products})
-  
+
+  const handleEditProduct = async () => {
+    if (editingProduct && productId) {
+      try {
+        const updatedProduct = {
+          _id: productId,
+          productName,
+          price: Number(price),
+          imageUrl,
+          description,
+          stockQuantity: Number(stockQuantity),
+        };
+        await editProduct(productId, updatedProduct);
+        toast({
+          title: "Product Updated Successfully",
+          description: `Product ${productName} has been updated.`,
+        });
+        clearInputs();
+        fetchProducts(); 
+        setOpen(false); 
+        setEditingProduct(false);
+      } catch (error) {
+        console.error(error);
+      }
+    } else {
+      console.error("No product selected for editing");
+    }
+  };
+
   return (
     <div className="flex flex-col bg-white">
       <div className="container mx-auto m-16">
+        {/* TODO: Modal in its separate file... */}
         <Dialog open={open} onOpenChange={setOpen}>
           <DialogContent>
             <DialogHeader>
@@ -102,6 +130,7 @@ function AdminDashboard() {
                   <Input
                     placeholder="MacBook air M1 Pro V2 Full HD Ultra SSD NVDIA PLUS"
                     onChange={(e) => setProductName(e.target.value)}
+                    value={productName}
                   />
                 </div>
                 <div className="flex  flex-col gap-y-2">
@@ -109,6 +138,7 @@ function AdminDashboard() {
                   <Input
                     placeholder="2,50"
                     onChange={(e) => setPrice(Number(e.target.value))}
+                    value={price}
                   />
                 </div>
                 <div className="flex  flex-col gap-y-2">
@@ -117,6 +147,7 @@ function AdminDashboard() {
                     placeholder="3"
                     onChange={(e) => setStockQuantity(Number(e.target.value))}
                     type="number"
+                    value={stockQuantity}
                   />
                 </div>
                 <div className="flex  flex-col gap-y-2">
@@ -126,6 +157,7 @@ function AdminDashboard() {
                     placeholder="http://mockimage.com.br/4"
                     onChange={(e) => setImageUrl(e.target.value)}
                     type="string"
+                    value={imageUrl}
                   />
                 </div>
                 <div className="flex  flex-col gap-y-2">
@@ -135,12 +167,13 @@ function AdminDashboard() {
                     placeholder="Very cool product"
                     onChange={(e) => setDescription(e.target.value)}
                     type="string"
+                    value={description}
                   />
                 </div>
               </div>
               <div>
                 {/* Why are margins working like that? no idea */}
-                <Button className="mt-4" onClick={handlePostProduct} type="submit">
+                <Button className="mt-4" onClick={editingProduct ? handleEditProduct : handlePostProduct} type="submit">
                   Save
                 </Button>
               </div>
@@ -169,9 +202,16 @@ function AdminDashboard() {
                     <TableCell>{product.imageUrl}</TableCell>
                     <TableCell>{product.description}</TableCell>
                     <TableCell>
-                      <i className="fa-solid fa-pencil" onClick={() => { 
-                        handleEditProduct(product._id);
-                      }}></i>
+                      <i className="fa-solid fa-pencil" onClick={() => {  
+                        setProductName(product.productName || "");
+                        setStockQuantity(product.stockQuantity || 0);
+                        setDescription(product.description || "");
+                        setImageUrl(product.imageUrl || "");
+                        setPrice(product.price || 0);
+                        setProductId(product._id);
+                        setOpen(true);
+                        setEditingProduct(true);
+                      }}/>
                     </TableCell>
                     <TableCell>
                       <i className="fa-solid fa-trash-can" onClick={() => handleDeleteProduct(product._id)}></i>
@@ -182,9 +222,7 @@ function AdminDashboard() {
             </TableBody>
           </Table>
           <div className="flex flex-row gap-x-4 mt-4 justify-end">
-            <DialogTrigger>
-              <Button>+ New Product</Button>
-            </DialogTrigger>
+            <Button onClick={() => setOpen(true)}>+ New Product</Button>
           </div>
         </Dialog>
       </div>

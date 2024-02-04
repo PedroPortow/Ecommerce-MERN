@@ -62,7 +62,7 @@ router.post("/checkout", verifyToken, async (req: Request, res: Response) => {
 
     res.json({ purchasedItems: user.purchasedItems });
   } catch (error) {
-    console.log(error);
+    console.error(error);
   }
 });
 

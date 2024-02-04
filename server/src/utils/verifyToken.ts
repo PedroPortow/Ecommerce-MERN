@@ -9,8 +9,6 @@ export const verifyToken = (req, res, next) => {
         return res.sendStatus(403);
       }
 
-      console.log({decoded})
-
       req.userId = decoded._id;
       req.isAdmin = decoded.isAdmin;
       next();

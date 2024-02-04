@@ -6,8 +6,6 @@ export const useGetProducts = () => {
   const [products, setProducts] = useState([]);
   const { headers } = useToken();
 
-  console.log({headers})
-
   const fetchProducts = async () => {
     try {
       const res = await axios.get("http://localhost:3001/products", { headers });

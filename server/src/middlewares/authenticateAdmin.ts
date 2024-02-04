@@ -1,9 +1,5 @@
-import { Request, Response, NextFunction } from 'express';
-import { UserModel } from '../models/user';
 export const authenticateAdmin = async (req, res, next) => {
-  
   try {
-    console.log(req.isAdmin)
     if (req.isAdmin) {
       next();
     } else {
