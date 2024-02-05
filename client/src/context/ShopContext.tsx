@@ -1,7 +1,7 @@
 import { IProduct } from "@/interfaces/IProduct";
 import { createContext, useState } from "react";
 
-interface ICartProduct {
+export interface ICartProduct {
   description: string;
   quantity: number;
   imageUrl?: string;
@@ -71,7 +71,6 @@ export const ShopContextProvider = (props: any) => {
     );
     setCartProducts(updatedCartProducts);
   };
-  
 
   const providedValues: IShopContext = {
     addToCart,

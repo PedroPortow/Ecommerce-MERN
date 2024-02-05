@@ -8,8 +8,8 @@ const Shop: React.FC = () => {
   const { products } = useGetProducts();
   
   return (
-    <div className="container mx-auto p-4 bg-slate-100 min-h-[90vh]">
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+    <div className="p-4 bg-slate-100 min-h-screen">
+      <div className="grid container mx-auto grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2">
         {products.map((product: IProduct) => (
           <ProductCard
             key={product._id}

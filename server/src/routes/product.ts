@@ -19,32 +19,34 @@ router.get("/", verifyToken, async (req: Request, res: Response) => {
 
 
 router.post("/checkout", verifyToken, async (req: Request, res: Response) => {
-  const { customerID, cartItems } = req.body;
+  const { customerID, cartProducts } = req.body;
+  
+  console.log(cartProducts)
   try {
     const user = await UserModel.findById(customerID);
 
-    const productIDs = Object.keys(cartItems);
+    const productIDs = cartProducts.map(product => product._id);
     const products = await ProductModel.find({ _id: { $in: productIDs } });
+
+    console.log({products})
 
     if (!user) {
       return res.status(400).json({ type: "TODO: ADD PRODUCT ENUM ERRORS" });
     }
-    if (products.length !== productIDs.length) {
-      return res.status(400).json({ type: "TODO: ADD PRODUCT ENUM ERRORS" });
-    }
 
     let totalPrice = 0;
-    for (const item in cartItems) {
+    for (const item in cartProducts) {
+      console.log({item})
       const product = products.find((product) => String(product._id) === item);
       if (!product) {
         return res.status(400).json({ type: "TODO: ADD PRODUCT ENUM ERRORS" });
       }
 
-      if (product.stockQuantity < cartItems[item]) {
+      if (product.stockQuantity < cartProducts[item]) {
         return res.status(400).json({ type: "TODO: ADD PRODUCT ENUM ERRORS" });
       }
 
-      totalPrice += product.price * cartItems[item];
+      totalPrice += product.price * cartProducts[item];
     }
 
     if (user.availableMoney < totalPrice) {

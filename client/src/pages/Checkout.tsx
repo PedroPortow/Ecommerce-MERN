@@ -1,8 +1,12 @@
 import React, { useContext } from 'react';
 import { ShopContext } from '@/context/ShopContext'; // Ajuste o caminho conforme necessário
+import { Button } from '@/components/ui/button';
+import { usePostCheckout } from '@/hooks/usePostCheckout';
 
 const Checkout: React.FC = () => {
   const { cartProducts, removeFromCart, updateCartProductCount } = useContext(ShopContext);
+
+  const { postCheckout } = usePostCheckout();
 
   const totalPrice = cartProducts.reduce((acc, product) => acc + product.price * product.quantity, 0);
 
@@ -52,14 +56,15 @@ const Checkout: React.FC = () => {
             ))}
           </ul>
         ) : (
-          <p>Seu carrinho está vazio.</p>
+          <p>Your card is empty.</p>
         )}
       </div>
       <div className="text-right mt-4">
         <h3 className="text-2xl font-bold">Total: R$ {totalPrice.toFixed(2)}</h3>
+        <Button onClick={() => postCheckout(cartProducts)}>Buy</Button>
       </div>
     </div>
-  ); 
+  );  
 };
 
 export default Checkout;

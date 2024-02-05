@@ -11,14 +11,16 @@ const ProductCard: React.FC<IProduct> = ({ _id, name, price = 0, description, im
   const quantity = getCartProductQuantity(_id);
 
   return (
-    <Card key={_id} >
-      <img src={imageUrl} alt={name} className="w-full h-64 object-cover" />
-      <div className="p-4">
-        <h2 className="text-xl font-semibold mb-2">{name}</h2>
-        <p className="text-gray-700 mb-2">{description}</p>
-        <p className="text-gray-900 font-bold">${price.toFixed(2)}</p>
-        <p className="text-sm text-gray-600">Stock: {stockQuantity}</p>
-        <div className='flex items-center justify-between mt-4'>
+    <Card key={_id} className='flex w-[360px] flex-col h-full'>
+      <img src={imageUrl} alt={name} className="w-full h-48 object-cover rounded-t" />
+      <div className="p-4 flex flex-col flex-grow">
+        <div className='flex flex-row mb-1 items-center justify-between'>
+          <h2 className="text-xl font-semibold">{name}</h2>
+          <p className="text-gray-900 font-bold">${String(price.toFixed(2)).replace(".", ",")}</p>
+        </div>
+        <p className="text-gray-700 mb-2 flex-grow">{description}</p>
+        <p className="text-sm text-gray-600 mb-8">Stock: {stockQuantity}</p>
+        <div className='flex items-center justify-between mt-auto'> 
           <Button 
             className=''
             onClick={() => addToCart({_id, name, price, description, imageUrl, stockQuantity})}
