@@ -1,50 +1,14 @@
 import express from "express";
-import jwt from "jsonwebtoken";
-import bcrypt from "bcrypt";
 
-const router = express.Router();
-import { IUser, UserModel } from "../models/user";
-import { UserErrors } from "../errors";
 import { verifyToken } from "../utils/verifyToken";
 import { UsersController } from "../controllers";
 
+const router = express.Router();
+
 router.post("/register", UsersController.registerUser);
 
-router.post("/login", async (req, res) => {
-  const { username, password } = req.body;
+router.post("/login", UsersController.login);
 
-  try {
-    const user: IUser = await UserModel.findOne({ username });
+router.get("/available-money/:userID", verifyToken, UsersController.availableMoney);
 
-    if (!user) {
-      return res.status(400).json({ type: UserErrors.NO_USER_FOUND });
-    }
-    const isPasswordValid = await bcrypt.compare(password, user.password);
-    if (!isPasswordValid) {
-      return res.status(400).json({ type: UserErrors.WRONG_CREDENTIALS });
-    }
-    const token = jwt.sign({ id: user._id, isAdmin: user.isAdmin }, "secret", {
-      expiresIn: '1 hour'
-    });
-    res.json({ token, userID: user._id });
-  } catch (err) {
-    res.status(500).json({ type: err });
-  }
-});
-
-router.get("/available-money/:userID", verifyToken, async (req, res) => {
-  const { userID } = req.params;
-
-  try {
-    const user = await UserModel.findById(userID);
-    if (!user) {
-      return res.status(400).json({ type: UserErrors.NO_USER_FOUND });
-    }
-
-    res.json({ availableMoney: user.availableMoney });
-  } catch (err) {
-    res.status(500).json({ type: err });
-  }
-});
-
-export { router as userRouter };
+export { router as UserRouter };
