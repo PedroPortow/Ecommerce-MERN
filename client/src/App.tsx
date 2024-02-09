@@ -16,12 +16,10 @@ function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <Toaster />
-
       <Router>
         <ShopContextProvider>
-          <Navbar />
           <Routes>
-            <Route path="/auth" element={<Auth />} />
+            <Route path="/" element={<Auth />} />
             <Route element={<ProtectedRoute />}>
               <Route path="/shop" element={<Shop />} />
               <Route path="/checkout" element={<Checkout />} />

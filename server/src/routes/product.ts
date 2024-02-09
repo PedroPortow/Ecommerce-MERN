@@ -24,45 +24,41 @@ router.post("/checkout", verifyToken, async (req: Request, res: Response) => {
   console.log(cartProducts)
   try {
     const user = await UserModel.findById(customerID);
-
-    const productIDs = cartProducts.map(product => product._id);
-    const products = await ProductModel.find({ _id: { $in: productIDs } });
-
-    console.log({products})
-
+    
     if (!user) {
-      return res.status(400).json({ type: "TODO: ADD PRODUCT ENUM ERRORS" });
+      return res.status(400).json("User not found");
     }
 
-    let totalPrice = 0;
-    for (const item in cartProducts) {
-      console.log({item})
-      const product = products.find((product) => String(product._id) === item);
-      if (!product) {
-        return res.status(400).json({ type: "TODO: ADD PRODUCT ENUM ERRORS" });
+    const productIds = cartProducts.map(product => product._id);
+    const products = await ProductModel.find({ _id: { $in: productIds } });
+
+    
+
+    let totalAmount = 0;
+    cartProducts.forEach(cartProduct => {
+      const product = cartProducts.find(product => String(product._id) == cartProduct._id);
+      
+      if(product.stockQuantity < cartProduct.quantity){
+        return res.status(400).json("Not enough stock")
       }
 
-      if (product.stockQuantity < cartProducts[item]) {
-        return res.status(400).json({ type: "TODO: ADD PRODUCT ENUM ERRORS" });
-      }
+      totalAmount += cartProduct.price * cartProduct.quantity
+    });
 
-      totalPrice += product.price * cartProducts[item];
+    if(user.availableMoney < totalAmount){
+      return res.status(400).json("Not enough money ")
     }
 
-    if (user.availableMoney < totalPrice) {
-      return res.status(400).json({ type: "TODO: ADD PRODUCT ENUM ERRORS" });
-    }
-
-    user.availableMoney -= totalPrice;
-    user.purchasedItems.push(...productIDs);
-
+    user.availableMoney -= totalAmount
+    user.purchasedItems.push(...productIds)
+    
     await user.save();
     await ProductModel.updateMany(
-      { _id: { $in: productIDs } },
+      { _id: { $in: productIds } },
       { $inc: { stockQuantity: -1 } }
     );
 
-    res.json({ purchasedItems: user.purchasedItems });
+    res.json("")
   } catch (error) {
     console.error(error);
   }

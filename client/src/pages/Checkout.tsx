@@ -14,7 +14,7 @@ const Checkout: React.FC = () => {
     if (quantity > 1) {
       updateCartProductCount(quantity - 1, productId);
     } else {
-      removeFromCart(productId); // Remove o item se a quantidade for 1 e o botão de diminuir for clicado
+      removeFromCart(productId); 
     }
   };
 
