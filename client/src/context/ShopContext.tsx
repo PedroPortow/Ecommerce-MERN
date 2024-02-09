@@ -15,7 +15,7 @@ export interface IShopContext {
   removeFromCart: (productId: string) => void;
   getCartProductQuantity: (productId: string) => number;
   updateCartProductCount: (newAmount: number, productId: string) => void;
-  getCartProductsQuantity: () => number;
+  getCartSize: () => number;
   cartProducts: ICartProduct[]; 
 }
 
@@ -24,7 +24,7 @@ const defaultValues: IShopContext = {
   removeFromCart: () => {},
   updateCartProductCount: () => {},
   getCartProductQuantity: () => 0,
-  getCartProductsQuantity: () => 0,
+  getCartSize: () => 0,
   cartProducts: []
 };
 
@@ -84,7 +84,7 @@ export const ShopContextProvider = (props: any) => {
   };
 
   const totalQuantity = useMemo(() => cartProducts.reduce((acc, product) => acc + product.quantity, 0), [cartProducts]);
-  const getCartProductsQuantity = () => totalQuantity;
+  const getCartSize = () => totalQuantity;
 
   const providedValues: IShopContext = {
     addToCart,
@@ -92,7 +92,7 @@ export const ShopContextProvider = (props: any) => {
     updateCartProductCount,
     getCartProductQuantity,
     cartProducts,
-    getCartProductsQuantity
+    getCartSize
   }
 
   return (

@@ -2,9 +2,9 @@ import { IShopContext, ShopContext } from "@/context/ShopContext";
 import React, { useContext } from "react";
 
 const CheckoutIconBadge: React.FC = () => {
-  const { getCartProductsQuantity } = useContext<IShopContext>(ShopContext)
+  const { getCartSize } = useContext<IShopContext>(ShopContext)
 
-  let numberOfItemsInCart = getCartProductsQuantity();
+  let numberOfItemsInCart = getCartSize();
 
   return (
     <div className="relative">
