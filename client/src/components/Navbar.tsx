@@ -7,7 +7,7 @@ const Navbar: React.FC = () => {
 
   if(location.pathname !== '/auth'){
     return (
-      <nav className="bg-primary-default text-white p-4 flex justify-between items-center shadow z-10 relative">
+      <nav className="bg-primary-default text-white px-4 py-1 flex justify-between items-center shadow z-10 relative">
         <Link to="/shop" className="px-4 text-black hover:text-gray-800">
           <h1 className="text-xl font-semibold">Shop</h1>
         </Link>
