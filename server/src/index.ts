@@ -14,6 +14,6 @@ app.use(cors());
 app.use("/user", UserRouter);
 app.use("/products", ProductRouter);
 
-mongoose.connect(`mongodb://0.0.0.0:27017/ecommerce-mern`);
+mongoose.connect(`mongodb://172.22.0.2:27017/ecommerce-mern`);
 
 app.listen(3001, () => console.log("Server starterd"));

@@ -1,0 +1,19 @@
+services:
+  web:
+    build: .
+    ports:
+      - 3001:3001
+    # isso faz com que todas as alterções na pasta remontem o container
+    volumes:
+      - .:/app
+    depends_on:
+      - mongo
+    expose:
+      - 3001
+
+  mongo:
+    image: mongo:4.2.0
+    volumes:
+      - ./data:/data/db
+    expose:
+      - 27017:27017
