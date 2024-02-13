@@ -11,7 +11,7 @@ const ProductCard: React.FC<IProduct> = ({ _id, name, price = 0, description, im
   const quantity = getCartProductQuantity(_id);
 
   return (
-    <Card key={_id} className='flex w-[360px] flex-col h-full'>
+    <Card key={_id} className='flex flex-col h-full'>
       <img src={imageUrl} alt={name} className="w-full h-48 object-cover rounded-t" />
       <div className="p-4 flex flex-col flex-grow">
         <div className='flex flex-row mb-1 items-center justify-between'>

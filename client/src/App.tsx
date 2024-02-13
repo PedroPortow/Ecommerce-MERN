@@ -1,5 +1,4 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import Navbar from "./components/Navbar";
 import Shop from "./pages/Shop";
 import Auth from "./pages/Auth";
 import Checkout from "./pages/Checkout";
@@ -16,12 +15,10 @@ function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <Toaster />
-
       <Router>
         <ShopContextProvider>
-          <Navbar />
           <Routes>
-            <Route path="/auth" element={<Auth />} />
+            <Route path="/" element={<Auth />} />
             <Route element={<ProtectedRoute />}>
               <Route path="/shop" element={<Shop />} />
               <Route path="/checkout" element={<Checkout />} />
